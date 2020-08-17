@@ -3,7 +3,7 @@ import Vuex from 'vuex'
 
 Vue.use(Vuex)
 
-const store = new Vuex.Store({
+export default new Vuex.Store({
   state: {
     loggedIn: false,
     user: {}
@@ -13,7 +13,9 @@ const store = new Vuex.Store({
       state.user = user
       state.loggedIn = true
     }
+  },
+  actions: {
+  },
+  modules: {
   }
 })
-
-export default store
