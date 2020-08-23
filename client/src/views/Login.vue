@@ -30,7 +30,7 @@ export default {
   },
   methods: {
     async login (code) {
-      const user = await fetch('http://localhost:3000/auth', {
+      const user = await fetch('http://localhost:3000/api/auth', {
         method: 'POST',
         headers: {
           'Content-type': 'application/json; charset=UTF-8'
