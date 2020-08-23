@@ -4,7 +4,8 @@
   "private": true,
   "main": "index.js",
   "scripts": {
-    "start": "node index.js"
+    "dev": "nodemon --exec npm start",
+    "start": "node src/index.js"
   },
   "dependencies": {
     "axios": "^0.19.2",
@@ -14,5 +15,8 @@
     "express": "^4.17.1",
     "express-session": "^1.17.1",
     "form-data": "^3.0.0"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.4"
   }
 }
