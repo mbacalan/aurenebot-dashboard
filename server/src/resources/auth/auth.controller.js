@@ -1,5 +1,6 @@
 const FormData = require("form-data");
 const axios = require("axios");
+const { urls } = require("../../urls");
 
 exports.authDiscordUser = async function(req, res) {
   if (!req.body.code) {
@@ -8,20 +9,18 @@ exports.authDiscordUser = async function(req, res) {
     });
   }
 
-  const tokenUrl = "https://discord.com/api/oauth2/token";
-  const userUrl = "https://discord.com/api/users/@me";
   const form = new FormData();
 
   form.append("client_id", process.env.CLIENT_ID);
   form.append("client_secret", process.env.CLIENT_SECRET);
   form.append("grant_type", "authorization_code");
   form.append("code", req.body.code);
-  form.append("redirect_uri", "http://localhost:8080/login");
+  form.append("redirect_uri", urls.discordRedirectUrl);
   form.append("scope", "identify guilds");
 
   try {
-    const { data: tokens } = await axios.post(tokenUrl, form, { headers: form.getHeaders() });
-    const { data: user } = await axios.get(userUrl, {
+    const { data: tokens } = await axios.post(urls.discordUserUrl, form, { headers: form.getHeaders() });
+    const { data: user } = await axios.get(urls.discordUserUrl, {
       headers: {
         authorization: `Bearer ${tokens.access_token}`
       }

@@ -2,6 +2,7 @@ const express = require("express");
 const session = require("express-session");
 const bodyParser = require("body-parser");
 const cors = require("cors");
+const { urls } = require("./urls");
 require("dotenv").config({ path: ".env.local" });
 
 const userRouter = require("./resources/user/user.router");
@@ -12,7 +13,7 @@ const app = express();
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 app.use(cors({
-  origin: "http://localhost:8080",
+  origin: urls.corsOrigin,
   credentials: true,
   methods: ["POST"]
 }));
