@@ -1,10 +1,8 @@
-const { Router } = require('express');
-const { getDiscordUser } = require('./user.controller');
+const { Router } = require("express");
+const userController = require("./user.controller");
 
 const userRouter = Router();
 
-userRouter.get('/', getDiscordUser);
+userRouter.get("/", userController.getDiscordUser);
 
-module.exports = {
-  userRouter
-}
+module.exports = userRouter;

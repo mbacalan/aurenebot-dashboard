@@ -1,10 +1,8 @@
-const { Router } = require('express');
-const { authDiscordUser } = require('./auth.controller');
+const { Router } = require("express");
+const authController = require("./auth.controller");
 
 const authRouter = Router();
 
-authRouter.post('/', authDiscordUser);
+authRouter.post("/", authController.authDiscordUser);
 
-module.exports = {
-  authRouter
-}
+module.exports = authRouter;
