@@ -12,6 +12,10 @@ export default new Vuex.Store({
     login (state, user) {
       state.user = user
       state.loggedIn = true
+    },
+    logout (state) {
+      state.user = {}
+      state.loggedIn = false
     }
   },
   actions: {

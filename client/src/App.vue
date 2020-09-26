@@ -12,12 +12,13 @@
         Dashboard
       </router-link>
 
-      <router-link
+      <a
         v-if="loggedIn"
-        to="/logout"
+        href="#"
+        @click="this.logout"
       >
         Logout
-      </router-link>
+      </a>
 
       <router-link
         v-if="!loggedIn"
@@ -50,6 +51,20 @@ export default {
       const user = await response.json()
 
       this.$store.commit('login', user)
+    }
+  },
+  methods: {
+    async logout () {
+      const request = await fetch('http://localhost:3000/auth/logout', {
+        method: 'POST',
+        mode: 'cors',
+        credentials: 'include'
+      })
+
+      if (request.ok) {
+        this.$store.commit('logout')
+        this.$router.push('home')
+      }
     }
   },
   computed: {
