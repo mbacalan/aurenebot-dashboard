@@ -30,17 +30,20 @@ export default {
   },
   methods: {
     async login (code) {
-      const user = await fetch('http://localhost:3000/api/auth', {
+      const response = await fetch('http://localhost:3000/auth/login/', {
         method: 'POST',
+        mode: 'cors',
         headers: {
           'Content-type': 'application/json; charset=UTF-8'
         },
         body: JSON.stringify({ code }),
         credentials: 'include'
-      }).then(res => res.json())
+      })
 
-      if (user) {
-        this.$store.commit('login')
+      if (response.ok) {
+        const user = await response.json()
+
+        this.$store.commit('login', user)
         this.$router.push('dashboard')
       }
     }

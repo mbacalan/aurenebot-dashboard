@@ -37,17 +37,18 @@ import { mapState } from 'vuex'
 export default {
   name: 'AureneDashboard',
   async beforeMount () {
-    const response = await fetch('http://localhost:3000/api/user', {
+    const response = await fetch('http://localhost:3000/user', {
       method: 'GET',
+      mode: 'cors',
       headers: {
         'Content-type': 'application/json; charset=UTF-8'
       },
       credentials: 'include'
     })
 
-    const user = await response.json()
-
     if (response.ok) {
+      const user = await response.json()
+
       this.$store.commit('login', user)
     }
   },
