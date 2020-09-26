@@ -34,3 +34,10 @@ exports.login = async function(req, res) {
     return res.sendStatus(500);
   }
 };
+
+exports.logout = async function(req, res) {
+  req.session.discordTokens = null;
+  req.session.discordUser = null;
+
+  return res.sendStatus(200);
+};
