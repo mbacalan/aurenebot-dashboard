@@ -14,8 +14,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 app.use(cors({
   origin: urls.corsOrigin,
-  credentials: true,
-  methods: ["POST"]
+  credentials: true
 }));
 app.use(session({
   secret: process.env.CLIENT_SECRET,
@@ -23,8 +22,8 @@ app.use(session({
   saveUninitialized: false
 }));
 
-app.use("/api/user", userRouter);
-app.use("/api/auth", authRouter);
+app.use("/user", userRouter);
+app.use("/auth", authRouter);
 
 app.listen(3000, function startServer() {
   console.log("Listening on localhost:3000");

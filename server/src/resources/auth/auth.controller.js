@@ -2,11 +2,9 @@ const FormData = require("form-data");
 const axios = require("axios");
 const { urls } = require("../../urls");
 
-exports.authDiscordUser = async function(req, res) {
+exports.login = async function(req, res) {
   if (!req.body.code) {
-    return res.status(401).json({
-      message: "Unauthorized"
-    });
+    return res.sendStatus(401);
   }
 
   const form = new FormData();
@@ -19,7 +17,7 @@ exports.authDiscordUser = async function(req, res) {
   form.append("scope", "identify guilds");
 
   try {
-    const { data: tokens } = await axios.post(urls.discordUserUrl, form, { headers: form.getHeaders() });
+    const { data: tokens } = await axios.post(urls.discordTokenUrl, form, { headers: form.getHeaders() });
     const { data: user } = await axios.get(urls.discordUserUrl, {
       headers: {
         authorization: `Bearer ${tokens.access_token}`
@@ -28,11 +26,11 @@ exports.authDiscordUser = async function(req, res) {
 
     req.session.discordTokens = tokens;
     req.session.discordUser = user;
+
     return res.json(user);
   } catch (err) {
     console.log(err);
-    return res.status(500).json({
-      message: "Server error"
-    });
+
+    return res.sendStatus(500);
   }
 };
