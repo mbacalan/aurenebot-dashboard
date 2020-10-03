@@ -6,16 +6,19 @@ Vue.use(Vuex)
 export default new Vuex.Store({
   state: {
     loggedIn: false,
-    user: {}
+    user: {},
+    guilds: {}
   },
   mutations: {
     login (state, user) {
-      state.user = user
       state.loggedIn = true
+      state.user = user
+      state.guilds = user.guilds
     },
     logout (state) {
-      state.user = {}
       state.loggedIn = false
+      state.user = {}
+      state.guilds = {}
     }
   },
   actions: {

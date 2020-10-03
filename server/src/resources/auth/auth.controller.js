@@ -23,11 +23,22 @@ exports.login = async function(req, res) {
         authorization: `Bearer ${tokens.access_token}`
       }
     });
+    let { data: guilds } = await axios.get(urls.discordGuildsUrl, {
+      headers: {
+        authorization: `Bearer ${tokens.access_token}`
+      }
+    });
 
-    req.session.discordTokens = tokens;
-    req.session.discordUser = user;
+    guilds = guilds.filter(guild => guild.owner == true);
 
-    return res.json(user);
+    req.session.dTokens = tokens;
+    req.session.dUser = user;
+    req.session.dGuilds = guilds;
+
+    return res.json({
+      ...user,
+      guilds
+    });
   } catch (err) {
     console.log(err);
 
@@ -36,8 +47,9 @@ exports.login = async function(req, res) {
 };
 
 exports.logout = async function(req, res) {
-  req.session.discordTokens = null;
-  req.session.discordUser = null;
+  req.session.dTokens = null;
+  req.session.dUser = null;
+  req.session.dGuilds = null;
 
   return res.sendStatus(200);
 };

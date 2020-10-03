@@ -1,13 +1,22 @@
 <template>
-  <div class="container">
-    <div v-if="!loggedIn">
+  <section class="dashboard">
+    <p v-if="!loggedIn">
       You must log in to see this page. Redirecting...
-    </div>
+    </p>
 
-    <div v-if="loggedIn">
+    <p v-if="loggedIn">
       Welcome to Dashboard, {{ user.username }}#{{ user.discriminator }}
+    </p>
+
+    <div>
+      <p>Please select a guild below</p>
+      <ul>
+        <li v-for="guild in guilds" :key="guild.id">
+          {{ guild.name }}
+        </li>
+      </ul>
     </div>
-  </div>
+  </section>
 </template>
 
 <script>
@@ -23,7 +32,7 @@ export default {
     }
   },
   computed: {
-    ...mapState(['loggedIn', 'user'])
+    ...mapState(['loggedIn', 'user', 'guilds'])
   }
 }
 </script>
