@@ -3,6 +3,6 @@ const userController = require("./user.controller");
 
 const userRouter = Router();
 
-userRouter.get("/", userController.getDiscordUser);
+userRouter.get("/", userController.getUser);
 
 module.exports = userRouter;

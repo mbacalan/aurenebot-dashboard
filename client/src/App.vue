@@ -6,7 +6,7 @@
 
     <nav>
       <router-link
-      v-if="loggedIn"
+        v-if="loggedIn"
         to="/dashboard"
       >
         Dashboard
