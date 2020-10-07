@@ -1,5 +1,5 @@
-const discordAxios = require("../../axios");
-const { config } = require("../../config");
+const discordAxios = require("../../utils/axios");
+const { config } = require("../../utils/config");
 
 const discordApi = discordAxios.getInstance();
 

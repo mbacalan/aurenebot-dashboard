@@ -3,7 +3,7 @@ const session = require("express-session");
 const bodyParser = require("body-parser");
 const cors = require("cors");
 
-const { config } = require("./config");
+const { config } = require("./utils/config");
 require("dotenv").config({ path: ".env.local" });
 
 const userRouter = require("./resources/user/user.router");
