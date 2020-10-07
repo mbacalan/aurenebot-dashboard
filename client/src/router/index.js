@@ -11,14 +11,19 @@ const routes = [
     component: Home
   },
   {
-    path: '/dashboard',
-    name: 'dashboard',
-    component: () => import(/* webpackChunkName: "dashboard" */ '../views/Dashboard.vue')
-  },
-  {
     path: '/login',
     name: 'login',
     component: () => import(/* webpackChunkName: "login" */ '../views/Login.vue')
+  },
+  {
+    path: '/servers',
+    name: 'servers',
+    component: () => import(/* webpackChunkName: "servers" */ '../views/Servers.vue')
+  },
+  {
+    path: '/dashboard/:id',
+    name: 'dashboard',
+    component: () => import(/* webpackChunkName: "dashboard" */ '../views/Dashboard.vue')
   }
 ]
 

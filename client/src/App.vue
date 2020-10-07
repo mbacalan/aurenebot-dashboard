@@ -7,9 +7,9 @@
     <nav>
       <router-link
         v-if="loggedIn"
-        to="/dashboard"
+        to="/servers"
       >
-        Dashboard
+        Servers
       </router-link>
 
       <a

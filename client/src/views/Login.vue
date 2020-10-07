@@ -9,7 +9,7 @@ export default {
   name: 'Login',
   mounted () {
     if (this.loggedIn && this.user) {
-      return this.$router.push('/dashboard')
+      return this.$router.push('/servers')
     }
 
     if (!this.loggedIn && this.$route.query.code) {
@@ -44,7 +44,7 @@ export default {
         const user = await response.json()
 
         this.$store.commit('login', user)
-        this.$router.push('dashboard')
+        this.$router.push('servers')
       }
     }
   }
