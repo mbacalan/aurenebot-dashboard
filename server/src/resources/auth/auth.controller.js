@@ -1,6 +1,8 @@
 const FormData = require("form-data");
-const axios = require("axios");
-const { urls } = require("../../urls");
+const discordAxios = require("../../axios");
+const { config } = require("../../config");
+
+const discordApi = discordAxios.getInstance();
 
 exports.login = async function(req, res) {
   if (!req.body.code) {
@@ -13,32 +15,26 @@ exports.login = async function(req, res) {
   form.append("client_secret", process.env.CLIENT_SECRET);
   form.append("grant_type", "authorization_code");
   form.append("code", req.body.code);
-  form.append("redirect_uri", urls.discordRedirectUrl);
+  form.append("redirect_uri", config.discordRedirectUrl);
   form.append("scope", "identify guilds");
 
   try {
-    const { data: tokens } = await axios.post(urls.discordTokenUrl, form, { headers: form.getHeaders() });
-    const { data: user } = await axios.get(urls.discordUserUrl, {
-      headers: {
-        authorization: `Bearer ${tokens.access_token}`
-      }
-    });
-    let { data: guilds } = await axios.get(urls.discordGuildsUrl, {
-      headers: {
-        authorization: `Bearer ${tokens.access_token}`
-      }
-    });
+    const { data: tokens } = await discordApi.post("/oauth2/token", form, { headers: form.getHeaders() });
+
+    discordAxios.setHeaders({ Authorization: `Bearer ${tokens.access_token}` });
+
+    const { data: user } = await discordApi.get(config.discordUserUrl);
+    let { data: guilds } = await discordApi.get(config.discordGuildsUrl);
 
     guilds = guilds.filter(guild => guild.owner == true);
 
     req.session.dTokens = tokens;
-    req.session.dUser = user;
-    req.session.dGuilds = guilds;
-
-    return res.json({
+    req.session.dUser = {
       ...user,
       guilds
-    });
+    };
+
+    return res.json(req.session.dUser);
   } catch (err) {
     console.log(err);
 
@@ -49,7 +45,6 @@ exports.login = async function(req, res) {
 exports.logout = async function(req, res) {
   req.session.dTokens = null;
   req.session.dUser = null;
-  req.session.dGuilds = null;
 
   return res.sendStatus(200);
 };
