@@ -15,7 +15,16 @@
         <input type="text" maxlength="20" v-model="nick">
       </label>
 
-      <button type="submit" @click.prevent="changeNick">
+      <button type="submit" @click.prevent="updateNick">
+        Submit
+      </button>
+
+      <label>
+        Bot Prefix:
+        <input type="text" maxlength="1" v-model="prefix">
+      </label>
+
+      <button type="submit" @click.prevent="updatePrefix">
         Submit
       </button>
     </div>
@@ -36,7 +45,8 @@ export default {
   },
   data () {
     return {
-      nick: ''
+      nick: '',
+      prefix: ''
     }
   },
   computed: {
@@ -46,10 +56,10 @@ export default {
     }
   },
   methods: {
-    async changeNick () {
+    async updateNick () {
       const nick = this.nick
 
-      const response = await fetch(`http://localhost:3000/servers/${this.$route.params.id}/changenick/`, {
+      const response = await fetch(`http://localhost:3000/servers/${this.$route.params.id}/updatenick/`, {
         method: 'PATCH',
         mode: 'cors',
         headers: {
@@ -64,6 +74,24 @@ export default {
 
         this.$store.commit('login', user)
         this.$router.push('servers')
+      }
+    },
+
+    async updatePrefix () {
+      const prefix = this.prefix
+
+      const response = await fetch(`http://localhost:3000/servers/${this.$route.params.id}/updateprefix/`, {
+        method: 'PATCH',
+        mode: 'cors',
+        headers: {
+          'Content-type': 'application/json; charset=UTF-8'
+        },
+        body: JSON.stringify({ prefix }),
+        credentials: 'include'
+      })
+
+      if (response.ok) {
+        console.log('prefix is ' + this.prefix)
       }
     }
   }
