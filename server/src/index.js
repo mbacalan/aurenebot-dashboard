@@ -1,10 +1,13 @@
 const express = require("express");
 const session = require("express-session");
 const bodyParser = require("body-parser");
+const MongoStore = require("connect-mongo")(session);
 const cors = require("cors");
 
 const { config } = require("./utils/config");
+const { mongooseConnection } = require("./utils/db");
 require("dotenv").config({ path: ".env.local" });
+require("./utils/db");
 
 const userRouter = require("./resources/user/user.router");
 const authRouter = require("./resources/auth/auth.router");
@@ -21,7 +24,8 @@ app.use(cors({
 app.use(session({
   secret: process.env.CLIENT_SECRET,
   resave: true,
-  saveUninitialized: false
+  saveUninitialized: false,
+  store: new MongoStore({ mongooseConnection })
 }));
 
 app.use("/user", userRouter);
