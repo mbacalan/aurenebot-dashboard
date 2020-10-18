@@ -5,22 +5,34 @@ const { config } = require("../../utils/config");
 const discordApi = discordAxios.getInstance();
 
 class Controller {
+  constructor() {
+    this.data = new Map([
+      ["client_id", process.env.CLIENT_ID],
+      ["client_secret", process.env.CLIENT_SECRET],
+      ["grant_type", "authorization_code"],
+      ["redirect_uri", config.discordRedirectUrl],
+      ["scope", "identify guilds"],
+    ]);
+    this.formData = new FormData();
+  }
+
   async login(req, res) {
     if (!req.body.code) {
       return res.sendStatus(401);
     }
 
-    const form = new FormData();
+    this.data.set("code", req.body.code);
 
-    form.append("client_id", process.env.CLIENT_ID);
-    form.append("client_secret", process.env.CLIENT_SECRET);
-    form.append("grant_type", "authorization_code");
-    form.append("code", req.body.code);
-    form.append("redirect_uri", config.discordRedirectUrl);
-    form.append("scope", "identify guilds");
+    for (let [key, value] of this.data) {
+      this.formData.append(key, value);
+    }
 
     try {
-      const { data: tokens } = await discordApi.post("/oauth2/token", form, { headers: form.getHeaders() });
+      const { data: tokens } = await discordApi.post(
+        "/oauth2/token",
+        this.formData,
+        { headers: this.formData.getHeaders() }
+      );
 
       discordAxios.setHeaders({ Authorization: `Bearer ${tokens.access_token}` });
 
