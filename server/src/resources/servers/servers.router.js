@@ -3,6 +3,7 @@ const serversController = require("./servers.controller");
 
 const serversRouter = Router({ mergeParams: true });
 
-serversRouter.patch("/changenick", serversController.changeNick);
+serversRouter.patch("/updatenick", serversController.updateNick);
+serversRouter.patch("/updateprefix", serversController.updatePrefix);
 
 module.exports = serversRouter;
