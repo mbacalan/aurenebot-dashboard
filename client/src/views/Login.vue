@@ -1,12 +1,23 @@
 <template>
   <div class="login">
-    Redirecting...
+    <p v-if="!error">
+      Redirecting...
+    </p>
+
+    <p v-if="error">
+      An error occured :( Please try again later!
+    </p>
   </div>
 </template>
 
 <script>
 export default {
   name: 'Login',
+  data () {
+    return {
+      error: false
+    }
+  },
   mounted () {
     if (this.loggedIn && this.user) {
       return this.$router.push('/servers')
@@ -45,6 +56,8 @@ export default {
 
         this.$store.commit('login', user)
         this.$router.push('servers')
+      } else {
+        this.error = true
       }
     }
   }

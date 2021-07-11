@@ -10,9 +10,12 @@
       </p>
 
       <p>You are managing {{ guild.name }}</p>
+
+      <p>Current Nick is <b>{{ currentNick }}</b></p>
+      <p>Current Prefix is <b>{{ currentPrefix }}</b></p>
       <label>
         Bot Nick:
-        <input type="text" maxlength="20" v-model="nick">
+        <input type="text" v-model="nick">
       </label>
 
       <button type="submit" @click.prevent="updateNick">
@@ -21,7 +24,7 @@
 
       <label>
         Bot Prefix:
-        <input type="text" maxlength="1" v-model="prefix">
+        <input type="text" v-model="prefix">
       </label>
 
       <button type="submit" @click.prevent="updatePrefix">
@@ -33,18 +36,50 @@
 
 <script>
 import { mapState } from 'vuex'
+import gql from 'graphql-tag'
+
+const UPDATE_NICK = gql`mutation ($server: String!, $nick: String!) {
+  updateNick(server: $server, nick: $nick) {
+    nick
+  }
+}`
+
+const UPDATE_PREFIX = gql`mutation ($server: String!, $prefix: String!) {
+  updatePrefix(server: $server, prefix: $prefix) {
+    prefix
+  }
+}`
+
+const GET_CONFIG = gql`query ($server: String!) {
+  getConfig(server: $server) {
+    nick,
+    prefix
+  }
+}`
 
 export default {
   name: 'Dashboard',
-  mounted () {
+  async mounted () {
     if (!this.loggedIn) {
       setTimeout(() => {
         this.$router.push('/')
       }, 3000)
     }
+
+    const response = await this.$apollo.query({
+      query: GET_CONFIG,
+      variables: { server: String(this.$route.params.id) }
+    })
+
+    if (response?.data) {
+      this.currentNick = response.data.getConfig.nick
+      this.currentPrefix = response.data.getConfig.prefix
+    }
   },
   data () {
     return {
+      currentNick: '',
+      currentPrefix: '',
       nick: '',
       prefix: ''
     }
@@ -57,41 +92,24 @@ export default {
   },
   methods: {
     async updateNick () {
-      const nick = this.nick
-
-      const response = await fetch(`http://localhost:3000/servers/${this.$route.params.id}/updatenick/`, {
-        method: 'PATCH',
-        mode: 'cors',
-        headers: {
-          'Content-type': 'application/json; charset=UTF-8'
-        },
-        body: JSON.stringify({ nick }),
-        credentials: 'include'
+      const response = await this.$apollo.mutate({
+        mutation: UPDATE_NICK,
+        variables: { server: String(this.$route.params.id), nick: this.nick }
       })
 
-      if (response.ok) {
-        const user = await response.json()
-
-        this.$store.commit('login', user)
-        this.$router.push('servers')
+      if (response?.data) {
+        this.currentNick = response.data.updateNick.nick
       }
     },
 
     async updatePrefix () {
-      const prefix = this.prefix
-
-      const response = await fetch(`http://localhost:3000/servers/${this.$route.params.id}/updateprefix/`, {
-        method: 'PATCH',
-        mode: 'cors',
-        headers: {
-          'Content-type': 'application/json; charset=UTF-8'
-        },
-        body: JSON.stringify({ prefix }),
-        credentials: 'include'
+      const response = await this.$apollo.mutate({
+        mutation: UPDATE_PREFIX,
+        variables: { server: String(this.$route.params.id), prefix: this.prefix }
       })
 
-      if (response.ok) {
-        console.log('prefix is ' + this.prefix)
+      if (response?.data) {
+        this.currentPrefix = response.data.updatePrefix.prefix
       }
     }
   }
